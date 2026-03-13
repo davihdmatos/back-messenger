@@ -4,6 +4,7 @@ import { compare, hash } from "bcrypt";
 import { users } from "../schemas/users.js";
 import jwt from "jsonwebtoken";
 import { MailService } from "../mail/mailer_service.js";
+import { sql } from "drizzle-orm";
 
 const find = async (req: Request, res: Response) => {
 	const { id } = req.params;
@@ -150,5 +151,27 @@ const registerConfirmation = async (req: Request, res: Response) => {
 		});
 	}
 };
+
+const search = async (req: Request, res: Response) => {
+	const {searchQuery} = req.body;
+	
+	if (
+		!searchQuery ||
+		!(typeof searchQuery === "string")
+	) {
+		res.status(400);
+		return res.json({
+			error: "Bad request.",
+		});
+	}
+
+	const users = await db.query.users.findMany({
+		where: {
+			name: {in: sql.placeholder(`*${searchQuery}*`)}
+		}
+	})
+
+	return res.json(users)
+}
 
 export default { find, register, registerConfirmation };
