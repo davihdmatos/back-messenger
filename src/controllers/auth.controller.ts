@@ -59,6 +59,7 @@ export const authenticate = async (
   | {
       token: string;
       user: {
+        id: string;
         name: string;
         email: string;
       };
@@ -78,7 +79,7 @@ export const authenticate = async (
     return false;
   }
 
-  const { createdAt, updatedAt, passwordHash, name, ...payload } = user;
+  const { createdAt, updatedAt, passwordHash, name, id, ...payload } = user;
 
   const token = jwt.sign(payload, process.env.TOKEN_SECRET as any, {
     expiresIn: process.env.TOKEN_EXPIRATION as any,
@@ -87,6 +88,7 @@ export const authenticate = async (
   return {
     token,
     user: {
+      id,
       name,
       email,
     },

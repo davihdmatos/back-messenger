@@ -6,13 +6,13 @@ import { relations, schema } from "./schema.js";
 const sql = neon(process.env.DATABASE_URL || "");
 
 export const db = drizzle({
-	client: sql,
-	casing: "snake_case",
-	schema,
-	relations: {
-		...relations.conversationMessagesRelations,
-		...relations.participantsConversationsRelations,
-		...relations.participantsUsersRelations,
-		...relations.userMessagesRelations,
-	},
+  client: sql,
+  casing: "snake_case",
+  schema,
+  relations: {
+    ...relations.conversationMessagesRelations,
+    ...relations.participantsConversationsRelations,
+    ...relations.participantsUsersRelations,
+    ...relations.userMessagesRelations,
+  },
 });

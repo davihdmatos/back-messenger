@@ -4,7 +4,6 @@ import { compare, hash } from "bcrypt";
 import { users } from "../schemas/users.js";
 import jwt from "jsonwebtoken";
 import { MailService } from "../mail/mailer_service.js";
-import { sql } from "drizzle-orm";
 
 const find = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -140,7 +139,7 @@ const registerConfirmation = async (req: Request, res: Response) => {
       signed: true,
     });
     res.json({
-      message: "Success",
+      userId: id,
     });
   } catch (e) {
     res.status(400);
