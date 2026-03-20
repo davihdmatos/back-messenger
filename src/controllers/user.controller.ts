@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { db } from "../db/database.js";
 import { compare, hash } from "bcrypt";
 import { users } from "../schemas/users.js";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { MailService } from "../mail/mailer_service.js";
 
 const find = async (req: Request, res: Response) => {
@@ -153,8 +153,23 @@ const registerConfirmation = async (req: Request, res: Response) => {
 
 const search = async (req: Request, res: Response) => {
   const { query } = req.params;
+  const token = req.signedCookies["auth_token"];
 
-  if (!query || !(typeof query === "string")) {
+  if (
+    !query ||
+    !(typeof query === "string") ||
+    !token ||
+    !(typeof token === "string")
+  ) {
+    res.status(400);
+    return res.json({
+      error: "Bad request.",
+    });
+  }
+
+  const payload = jwt.decode(token) as (JwtPayload & { email: string }) | null;
+
+  if (!payload || !payload.email || typeof payload.email !== "string") {
     res.status(400);
     return res.json({
       error: "Bad request.",
@@ -163,6 +178,17 @@ const search = async (req: Request, res: Response) => {
 
   const users = await db.query.users.findMany({
     where: {
+      NOT: {
+        participations: {
+          conversation: {
+            participants: {
+              participant: {
+                email: payload.email,
+              },
+            },
+          },
+        },
+      },
       OR: [
         {
           name: {
@@ -175,6 +201,11 @@ const search = async (req: Request, res: Response) => {
           },
         },
       ],
+    },
+    columns: {
+      id: true,
+      name: true,
+      email: true,
     },
   });
 

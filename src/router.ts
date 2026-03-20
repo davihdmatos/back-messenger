@@ -17,6 +17,7 @@ router.get("/user/search/:query", userController.search);
 router.post("/user", userController.register);
 router.post("/user/confirm", userController.registerConfirmation);
 
+router.post("/conversations/addUser", conversationController.create);
 router.get("/conversations/:userId", conversationController.findByUser);
 
 router.get("/messages/:conversationId", messagesController.findByConversation);

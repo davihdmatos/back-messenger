@@ -9,20 +9,3 @@ import { participants } from "../schemas/participants.js";
 import { users } from "../schemas/users.js";
 
 export const schema = { conversations, messages, participants, users };
-
-import {
-	conversationMessagesRelations,
-	userMessagesRelations,
-} from "../schemas/messages.js";
-
-import {
-	participantsConversationsRelations,
-	participantsUsersRelations,
-} from "../schemas/participants.js";
-
-export const relations = {
-	conversationMessagesRelations,
-	userMessagesRelations,
-	participantsConversationsRelations,
-	participantsUsersRelations,
-};
