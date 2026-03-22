@@ -17,7 +17,7 @@ export const io = new Server(server);
 app.use(
   cors({
     origin: [
-      "https://front-messenger-kz84q4hk8-davihdmatos-9122s-projects.vercel.app/",
+      "https://front-messenger-bdd18njrz-davihdmatos-9122s-projects.vercel.app",
     ],
     credentials: true,
   }),
