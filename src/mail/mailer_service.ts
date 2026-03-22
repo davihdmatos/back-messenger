@@ -6,6 +6,7 @@ export class MailService {
 
   async sendUserConfirmation(username: string, email: string, code: string) {
     try {
+      console.log(process.env.EMAIL_KEY);
       await sgMail.send({
         from: "d47701206@gmail.com",
         to: email,
