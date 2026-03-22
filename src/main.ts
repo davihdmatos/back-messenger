@@ -16,10 +16,7 @@ export const io = new Server(server);
 
 app.use(
   cors({
-    origin: [
-      "https://front-messenger.vercel.app",
-      "https://front-messenger-bdd18njrz-davihdmatos-9122s-projects.vercel.app",
-    ],
+    origin: ["https://front-messenger.vercel.app"],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
