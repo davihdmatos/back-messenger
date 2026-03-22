@@ -58,7 +58,7 @@ const register = async (req: Request, res: Response) => {
   const codeHash = await hash(code, 8);
 
   const mailService = new MailService();
-  mailService.sendUserConfirmation(name, email, code);
+  await mailService.sendUserConfirmation(name, email, code);
 
   const payload = {
     email,
