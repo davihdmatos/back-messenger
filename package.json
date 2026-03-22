@@ -22,6 +22,7 @@
   "homepage": "https://github.com/davi-herbes/back-messenger#readme",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
+    "@sendgrid/mail": "^8.1.6",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

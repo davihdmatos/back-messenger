@@ -1,16 +1,13 @@
-import { Resend } from "resend";
-
+import sgMail from "@sendgrid/mail";
 export class MailService {
-  private resend: Resend;
-
   constructor() {
-    this.resend = new Resend(process.env.EMAIL_KEY);
+    sgMail.setApiKey(process.env.EMAIL_KEY || "");
   }
 
   async sendUserConfirmation(username: string, email: string, code: string) {
     try {
-      await this.resend.emails.send({
-        from: "onboarding@resend.dev",
+      await sgMail.send({
+        from: "d47701206@gmail.com",
         to: email,
         subject: "Confirme seu email",
         html: `<div class="container"><h1>Olá, ${username} o código para autenticação é: </h1><br><h2>${code}</h2></div>`,
