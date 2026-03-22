@@ -1,29 +1,15 @@
-import * as nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 export class MailService {
-  private transporter: nodemailer.Transporter;
+  private resend: Resend;
 
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.USER_EMAIL,
-        pass: process.env.PASSWORD_EMAIL,
-      },
-      tls: {
-        rejectUnauthorized: false,
-        minVersion: "TLSv1.2",
-      },
-    });
-
-    console.log(this.transporter);
+    this.resend = new Resend(process.env.EMAIL_KEY);
   }
 
   async sendUserConfirmation(username: string, email: string, code: string) {
     try {
-      await this.transporter.sendMail({
+      await this.resend.emails.send({
         from: '"Simple Messenger" d47701206@gmail.com',
         to: email,
         subject: "Confirme seu email",
