@@ -16,7 +16,9 @@ export const io = new Server(server);
 
 app.use(
   cors({
-    origin: ["http://localhost:9000"],
+    origin: [
+      "https://front-messenger-kz84q4hk8-davihdmatos-9122s-projects.vercel.app/",
+    ],
     credentials: true,
   }),
 );
@@ -50,6 +52,5 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 });
 
-server.listen(3000, () => {
-  console.log("OPA");
-});
+const PORT = process.env.PORT || 3000;
+server.listen(PORT);
