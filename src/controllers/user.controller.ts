@@ -40,13 +40,15 @@ const generateRandomSixDigitNumber = () => {
 };
 
 const register = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
 
   if (
     !name ||
     !(typeof name === "string") ||
     !email ||
-    !(typeof email === "string")
+    !(typeof email === "string") ||
+    !password ||
+    !(typeof password === "string")
   ) {
     res.status(400);
     return res.json({
@@ -54,27 +56,44 @@ const register = async (req: Request, res: Response) => {
     });
   }
 
-  const code = generateRandomSixDigitNumber();
-  const codeHash = await hash(code, 8);
+  try {
+    const passwordHash = await hash(password, 8);
 
-  const mailService = new MailService();
-  await mailService.sendUserConfirmation(name, email, code);
+    const [user] = await db
+      .insert(users)
+      .values({ name, email, passwordHash })
+      .returning({ id: users.id });
+    const { id } = user || { id: undefined };
 
-  const payload = {
-    email,
-    name,
-    codeHash,
-  };
+    if (!id) {
+      res.status(400);
 
-  res.cookie("registering_user", payload, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 1000 * 60 * 10,
-    signed: true,
-  });
+      return res.json({
+        error: "Bad request.",
+      });
+    }
 
-  return res.json({ message: "E-mail sendend." });
+    const token = jwt.sign({ id, email }, process.env.TOKEN_SECRET as any, {
+      expiresIn: process.env.TOKEN_EXPIRATION as any,
+    });
+
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24,
+      signed: true,
+    });
+    res.json({
+      userId: id,
+    });
+  } catch (e) {
+    res.status(400);
+
+    return res.json({
+      error: "Bad request.",
+    });
+  }
 };
 
 const registerConfirmation = async (req: Request, res: Response) => {
